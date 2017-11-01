@@ -62,11 +62,11 @@ function getImage() { //Function to get an array of random number
 
 
 function clickEvent(e){
-  if (clickCounter <= 4) changeImage();
+  if (clickCounter <= 24) changeImage();
   console.log('clicked',e.target);
   imageObjArr[e.target.id].selected++;
   clickCounter++;
-  if (clickCounter > 4){
+  if (clickCounter > 24){
     var ul = document.getElementById('photos');
     ul.innerHTML = '<li> ' + 'You have completed the selection process.  Thank you for participating.' + '</li>';
     dataTable();
@@ -98,15 +98,20 @@ function dataTable(){
   var imgTitle=[];
   var selectedData=[];
   var displayedData=[];
-  var backgroundColor=[];
+  var backgroundSelected=[];
+  var backgroundDisplayed=[];
+
 //Create array of chart titles and chart data
 for (var i=0; i < imageFiles.length; i++){
   imgTitle.push(imageFiles[i]);
   selectedData.push(imageObjArr[i].selected);
-  selectedData.push(imageObjArr[i].displayed);
-  backgroundColor.push('black');
+  displayedData.push(imageObjArr[i].displayed);
+  backgroundSelected.push('grey');
+  backgroundDisplayed.push('blue');
+
 }
 console.log('selected data', selectedData);
+console.log('displayed data', displayedData);
 var canvas = document.getElementById('chart');
 var ctx = canvas.getContext('2d');
 
@@ -114,17 +119,21 @@ var chart = new Chart (ctx, {
   type: 'bar',
   data: {
     labels: imgTitle,
-    datasets: [{
+    datasets: [
+      {
       label: 'Times Selected',
       data: selectedData,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundSelected,
+      borderWidth: 1,
+    },
+    {
+      label: 'Times Displayed',
+      data: displayedData,
+      backgroundColor: backgroundDisplayed,
       borderWidth: 1,
     }]
   },
   options: {}
 });
-
-
-
 
   }
