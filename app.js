@@ -1,7 +1,7 @@
-'use strict';
+ 'use strict';
 
 var imageFiles = [ //array of image files
-  'bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'usb.jpg', 'water-can.jpg', 'wine-glass.jpg']
+  'bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass']
 
 var currentOne;
 var currentTwo;
@@ -9,14 +9,14 @@ var currentThree;
 
 var clickCounter=0;
 
-var pOne;
-var pTwo;
-var pThree;
+var  pOne;
+var  pTwo;
+var  pThree;
 
 // The object constructor
 function Image (name) {
   this.name = name; //image file name
-  this.path = './img/'+name; //path to imageFiles
+  this.path = './img/'+name+'.jpg'; //path to imageFiles
 //  console.log(this.name, this.path);
   this.displayed = 0;  //counter for times displayed
   this.selected = 0; //counter for times selected
@@ -33,6 +33,9 @@ for (var i=0; i < imageFiles.length; i++) {
 //Random number generator funciton
 function random() {
   var rando = Math.floor(Math.random() * (imageFiles.length)); //Get a random nubmer 1-20
+  while ((rando === pOne) || (rando === pTwo) || (rando === pThree)) {
+  rando = Math.floor(Math.random() * (imageFiles.length));
+  }
   return rando;
   }
 
@@ -42,15 +45,17 @@ function getImage() { //Function to get an array of random number
   currentTwo = random();
   currentThree = random();
   while ((currentTwo === currentOne) ||
-  (currentThree === currentTwo) || (currentThree === currentOne)
-  || (pOne === currentThree) || (pOne === currentTwo) || (pOne === currentOne) ||
-  (pTwo === currentThree) || (pTwo === currentTwo) || (pTwo === currentOne) ||
-  (pThree === currentThree) || (pThree === currentTwo) || (pThree === currentOne))
+  (currentThree === currentTwo) || (currentThree === currentOne))
+
   {
     currentTwo = random();
     currentThree = random();
     console.log('while');
   }
+  pOne = currentOne;
+  pTwo = currentTwo;
+  pThree = currentThree;
+
   return [currentOne, currentTwo, currentThree];
 
 }
@@ -63,7 +68,8 @@ function clickEvent(e){
   clickCounter++;
   if (clickCounter > 4){
     var ul = document.getElementById('photos');
-    ul.innerHTML = '<li> ' + 'Counter done' + '</li>';
+    ul.innerHTML = '<li> ' + 'You have completed the selection process.  Thank you for participating.' + '</li>';
+    dataTable();
   }
 }
 
@@ -86,9 +92,39 @@ function changeImage () {
   document.getElementById(karen[1]).addEventListener('click', clickEvent);
   document.getElementById(karen[2]).addEventListener('click', clickEvent);
 
-  //Capture which images were just displayed
-  pOne = karen[0];
-  pTwo = karen[1];
-  pThree = karen[2];
-  console.log(pOne, pTwo, pThree);
 }
+
+function dataTable(){
+  var imgTitle=[];
+  var selectedData=[];
+  var displayedData=[];
+  var backgroundColor=[];
+//Create array of chart titles and chart data
+for (var i=0; i < imageFiles.length; i++){
+  imgTitle.push(imageFiles[i]);
+  selectedData.push(imageObjArr[i].selected);
+  selectedData.push(imageObjArr[i].displayed);
+  backgroundColor.push('black');
+}
+console.log('selected data', selectedData);
+var canvas = document.getElementById('chart');
+var ctx = canvas.getContext('2d');
+
+var chart = new Chart (ctx, {
+  type: 'bar',
+  data: {
+    labels: imgTitle,
+    datasets: [{
+      label: 'Times Selected',
+      data: selectedData,
+      backgroundColor: backgroundColor,
+      borderWidth: 1,
+    }]
+  },
+  options: {}
+});
+
+
+
+
+  }
