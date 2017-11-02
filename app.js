@@ -13,8 +13,9 @@ var  pOne;
 var  pTwo;
 var  pThree;
 
-var status=''; //Empty string to see if there is anything in localStorage
-
+var imgTitle=[];
+var selectedData=[];
+var displayedData=[];
 
 // The object constructor
 function Image (name) {
@@ -40,10 +41,12 @@ function random() {
   rando = Math.floor(Math.random() * (imageFiles.length));
   }
   return rando;
-  }
+}
 
 
 function getImage() { //Function to get an array of random number
+  console.log('function getImage');
+
   currentOne = random();
   currentTwo = random();
   currentThree = random();
@@ -69,6 +72,7 @@ function clickEvent(e){
   console.log('clicked',e.target);
   imageObjArr[e.target.id].selected++;
   clickCounter++;
+  console.log('clickCounter', clickCounter);
   if (clickCounter > 4){
     var ul = document.getElementById('photos');
     ul.innerHTML = '<li> ' + 'You have completed the selection process.  Thank you for participating.' + '</li>';
@@ -78,76 +82,85 @@ function clickEvent(e){
 
 
 function changeImage () {
-  var karen = getImage();
+  console.log('function changeImage');
+
+  var rndArr = getImage();
   var ul = document.getElementById('photos');
   var img = '';
-  for (var i=0; i < karen.length; i++){
-    img = img + '<img id="' + karen[i] + '" src="' + imageObjArr[karen[i]].path + '" >';
+  for (var i=0; i < rndArr.length; i++){
+    img = img + '<img id="' + rndArr[i] + '" src="' + imageObjArr[rndArr[i]].path + '" >';
 
-    imageObjArr[karen[i]].displayed++;
+    imageObjArr[rndArr[i]].displayed++;
   }
   ul.innerHTML = img;
 
-  document.getElementById(karen[0]).addEventListener('click', clickEvent);
-  document.getElementById(karen[1]).addEventListener('click', clickEvent);
-  document.getElementById(karen[2]).addEventListener('click', clickEvent);
+  document.getElementById(rndArr[0]).addEventListener('click', clickEvent);
+  document.getElementById(rndArr[1]).addEventListener('click', clickEvent);
+  document.getElementById(rndArr[2]).addEventListener('click', clickEvent);
 
 }
 
 function dataTable(){
-  var imgTitle=[];
-  var selectedData=[];
-  var displayedData=[];
+  console.log('function dataTable');
+
   var backgroundSelected=[];
   var backgroundDisplayed=[];
 
-//Create array of chart titles and chart data
-for (var i=0; i < imageFiles.length; i++){
-  //Table Data arrays
-  imgTitle.push(imageFiles[i]);
-  selectedData.push(imageObjArr[i].selected);
-  displayedData.push(imageObjArr[i].displayed);
-  backgroundSelected.push('grey');
-  backgroundDisplayed.push('blue');
-}
+  if (localStorage.title){
+    getLocalStorage();
+    }else{
+        //Create array of chart titles and chart data
+        for (var i=0; i < imageFiles.length; i++){
+          //Table Data arrays
+          imgTitle.push(imageFiles[i]);
+          selectedData.push(imageObjArr[i].selected);
+          displayedData.push(imageObjArr[i].displayed);
+          }
+    }
 
-console.log ('ImgTitle', imgTitle);
-console.log ('selectedData', selectedData);
-console.log ('displayedData', displayedData);
-
-
-//Call save function
-save();
-//create();
-
-var canvas = document.getElementById('chart');
-var ctx = canvas.getContext('2d');
-
-var chart = new Chart (ctx, {
-  type: 'bar',
-  data: {
-    labels: imgTitle,
-    datasets: [
-      {
-      label: 'Times Selected',
-      data: selectedData,
-      backgroundColor: backgroundSelected,
-      borderWidth: 1,
-    },
-    {
-      label: 'Times Displayed',
-      data: displayedData,
-      backgroundColor: backgroundDisplayed,
-      borderWidth: 1,
-    }]
-  },
-  options: {}
-});
-
+    //Set chart colors
+  for (var i=0; i < imageFiles.length; i++){
+    backgroundSelected.push('grey');
+    backgroundDisplayed.push('blue');
   }
+
+
+  console.log ('ImgTitle', imgTitle);
+  console.log ('selectedData', selectedData);
+  console.log ('displayedData', displayedData);
+
+  //Call save function
+  save();
+
+  var canvas = document.getElementById('chart');
+  var ctx = canvas.getContext('2d');
+
+  var chart = new Chart (ctx, {
+    type: 'bar',
+    data: {
+      labels: imgTitle,
+      datasets: [
+        {
+        label: 'Times Selected',
+        data: selectedData,
+        backgroundColor: backgroundSelected,
+        borderWidth: 1,
+      },
+      {
+        label: 'Times Displayed',
+        data: displayedData,
+        backgroundColor: backgroundDisplayed,
+        borderWidth: 1,
+      }]
+    },
+    options: {}
+  });
+
+}
 
 //Function to save results locally
 function save () {
+  console.log('function save');
 
   var svTitle=[];
   var svSel=[];
@@ -162,42 +175,42 @@ function save () {
     svDis.push(imageObjArr[i].displayed);
     }
 
+  localStorage.obj=JSON.stringify(imageObjArr);
   localStorage.title=JSON.stringify(svTitle);
   localStorage.selected=JSON.stringify(svSel);
   localStorage.displayed=JSON.stringify(svDis);
 
-  console.log ('counter', localStorage.counter);
-  console.log ('localStorage.title', localStorage.title);
-  console.log ('localStorage.selected', localStorage.selected);
-  console.log ('localStorage.displayed', localStorage.displayed);
+  console.log ('string imageObjArr', localStorage.obj);
+//  console.log ('localStorage.title', localStorage.title);
+//  console.log ('localStorage.selected', localStorage.selected);
+//  console.log ('localStorage.displayed', localStorage.displayed);
 
-  var locTitle = JSON.parse(localStorage.title,',');
-  var locSelected = JSON.parse(localStorage.selected,'.');
-  var locDisplayed = JSON.parse(localStorage.displayed,'.');
-  console.log('split title', locTitle);
-  console.log(locSelected);
-  console.log(locDisplayed);
 }
 
 
 function getLocalStorage(){
 //Function to take localStorage and redraw my Table
+console.log('function getLocalStorage');
 
+imageObjArr = JSON.parse(localStorage.obj, ',');
+  imgTitle = JSON.parse(localStorage.title,',');
+  selectedData = JSON.parse(localStorage.selected,'.');
+  displayedData = JSON.parse(localStorage.displayed,'.');
 
-  var locTitle = localStorage.title.split(',');;
-  var locSelected = localStorage.selected.split('.');;
-  var locDisplayed = localStorage.displayed.split('.');;
-
+  console.log('parse imageObjArr', imageObjArr);
+//  console.log('parse sel', selectedData);
+//  console.log('parse dis',displayedData);
 }
 
 //Function to load the page
 function load(){
-  if(localStorage.counter) {
+  console.log('function load');
+
+  if(localStorage.title) {
     dataTable();
   }else{
-    console.log('here');
     changeImage();
-    console.log('now here');
+    console.log('function changeImage');
   }
 }
 
