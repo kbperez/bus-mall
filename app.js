@@ -1,18 +1,23 @@
  'use strict';
+//BUS MALL This code is used to generate three side by side images for users to select from for a marketing focus group.  There will be 25 selection events and then the date for each images - # of times displayed and # of times selected - will be charted.
+
 
 var imageFiles = [ //array of image files
   'bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass']
 
-var currentOne;
-var currentTwo;
-var currentThree;
+
+//Declaring global variables
+var currentOne; //Currently displayed image 1
+var currentTwo; //Currently displayed image 2
+var currentThree; //Currently displayed image 3
 
 var clickCounter=0;
 
-var  pOne;
-var  pTwo;
-var  pThree;
+var  pOne; //Previously displayed image 1
+var  pTwo; //Previously displayed image 3
+var  pThree; //Previously displayed image 3
 
+// Arrays to hold chart data
 var imgTitle=[];
 var selectedData=[];
 var displayedData=[];
@@ -66,21 +71,21 @@ function getImage() { //Function to get an array of random number
 
 }
 
-
+//Function to wait for the user to make a selection via a click
 function clickEvent(e){
-  if (clickCounter <= 4) changeImage();
+  if (clickCounter <= 24) changeImage();
   console.log('clicked',e.target);
   imageObjArr[e.target.id].selected++;
   clickCounter++;
   console.log('clickCounter', clickCounter);
-  if (clickCounter > 4){
+  if (clickCounter > 24){
     var ul = document.getElementById('photos');
     ul.innerHTML = '<li> ' + 'You have completed the selection process.  Thank you for participating.' + '</li>';
     dataTable();
   }
 }
 
-
+//Function to displayed images in the DOM
 function changeImage () {
   console.log('function changeImage');
 
@@ -100,6 +105,7 @@ function changeImage () {
 
 }
 
+//Function to draw the data table and to keep results in localStorage
 function dataTable(){
   console.log('function dataTable');
 
