@@ -5,10 +5,17 @@ body {
   margin: auto 0;
 }
 
+header{
+  text-align: center;
+  margin-top: 50px;
+}
+
 h1 {
   font-family: times;
   font-size: 36px;
   margin-bottom: 20px;
+  margin-left: auto;
+
 }
 
 p{
@@ -17,14 +24,22 @@ p{
 }
 
 main{
+  margin-top: 100px;
+  background-color: lightblue;
 
 }
 
-div{
+ul{
   display:inline-block;
+  margin-top: 10px;
+}
+
+img {
+  margin-left: 10px;
 }
 
 #chart{
   width: 40%;
   height: 40%;
+  background-color: white;
 }
